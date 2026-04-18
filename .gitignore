@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+data/specimens.db
+.env
+venv/
+.venv/

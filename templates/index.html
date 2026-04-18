@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Specimen Size Lab</title>
+    <style>
+      :root {
+        --ink: #10212f;
+        --soft-ink: #244357;
+        --paper: #f4f7f9;
+        --accent-a: #0ea5a0;
+        --accent-b: #f97316;
+        --card: rgba(255, 255, 255, 0.9);
+        --success: #0c8a5a;
+        --error: #c93d2d;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 10% 20%, rgba(14, 165, 160, 0.18), transparent 35%),
+          radial-gradient(circle at 85% 15%, rgba(249, 115, 22, 0.22), transparent 30%),
+          linear-gradient(145deg, #ecf6f7 0%, #fff2e8 100%);
+      }
+
+      .wrap {
+        width: min(1100px, 92vw);
+        margin: 26px auto;
+        animation: rise 0.6s ease;
+      }
+
+      .hero {
+        background: linear-gradient(110deg, #0f5564, #d65b10);
+        color: white;
+        padding: 26px;
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(16, 33, 47, 0.16);
+      }
+
+      .hero h1 {
+        margin: 0;
+        letter-spacing: 0.4px;
+        font-size: clamp(1.5rem, 4vw, 2.35rem);
+      }
+
+      .hero p {
+        margin: 10px 0 0;
+        color: rgba(255, 255, 255, 0.92);
+      }
+
+      .grid {
+        margin-top: 18px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .card {
+        background: var(--card);
+        backdrop-filter: blur(8px);
+        border-radius: 16px;
+        padding: 20px;
+        box-shadow: 0 14px 24px rgba(36, 67, 87, 0.13);
+      }
+
+      .card h2 {
+        margin-top: 0;
+        color: var(--soft-ink);
+      }
+
+      label {
+        display: block;
+        margin: 10px 0 4px;
+        font-size: 0.95rem;
+        font-weight: 600;
+      }
+
+      input,
+      select,
+      button {
+        width: 100%;
+        border-radius: 10px;
+        border: 1px solid #b8c8d2;
+        padding: 11px;
+        font-size: 1rem;
+      }
+
+      button {
+        margin-top: 12px;
+        border: none;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(95deg, var(--accent-a), var(--accent-b));
+        cursor: pointer;
+        transition: transform 0.2s ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      .msg {
+        margin: 12px 0 0;
+        padding: 10px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+
+      .success {
+        background: rgba(12, 138, 90, 0.12);
+        color: var(--success);
+      }
+
+      .error {
+        background: rgba(201, 61, 45, 0.12);
+        color: var(--error);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        text-align: left;
+        padding: 9px;
+        border-bottom: 1px solid #d8e2e8;
+        font-size: 0.92rem;
+      }
+
+      th {
+        color: var(--soft-ink);
+      }
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 900px) {
+        .grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <section class="hero">
+        <h1>Specimen Size Lab</h1>
+        <p>Actual size formula: actual size = microscope size / magnification</p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Calculator</h2>
+          <form method="post">
+            <label for="username">Username</label>
+            <input id="username" name="username" required />
+
+            <label for="microscope_size">Microscope Size</label>
+            <input id="microscope_size" name="microscope_size" type="number" step="any" min="0.000001" required />
+
+            <label for="magnification">Magnification</label>
+            <input id="magnification" name="magnification" type="number" step="any" min="0.000001" required />
+
+            <label for="unit">Unit</label>
+            <select id="unit" name="unit">
+              <option value="um">um</option>
+              <option value="mm">mm</option>
+              <option value="cm">cm</option>
+            </select>
+
+            <button type="submit">Calculate and Store</button>
+          </form>
+
+          {% if message %}
+          <p class="msg {{ 'success' if message_type == 'success' else 'error' }}">{{ message }}</p>
+          {% endif %}
+        </article>
+
+        <article class="card">
+          <h2>Saved Records</h2>
+          <div style="overflow-x: auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>User</th>
+                  <th>Microscope</th>
+                  <th>Mag.</th>
+                  <th>Actual</th>
+                  <th>Unit</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for row in records %}
+                <tr>
+                  <td>{{ row['id'] }}</td>
+                  <td>{{ row['username'] }}</td>
+                  <td>{{ '%.4f'|format(row['microscope_size']) }}</td>
+                  <td>{{ '%.2f'|format(row['magnification']) }}</td>
+                  <td>{{ '%.6f'|format(row['actual_size']) }}</td>
+                  <td>{{ row['unit'] }}</td>
+                  <td>{{ row['created_at'] }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>
